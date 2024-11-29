@@ -109,6 +109,30 @@ app.get("/products/category/:category", async (req, res) => {
   }
 });
 
+const getProductsByGender = async (productGender) => {
+  try {
+    const products = await Product.find({ gender: productGender });
+
+    return products;
+  } catch (error) {
+    console.error("Product not found", error);
+  }
+};
+
+app.get("/products/gender/:gender", async (req, res) => {
+  try {
+    const products = await getProductsByGender(req.params.gender);
+
+    if (products && products.length > 0) {
+      res.json(products);
+    } else {
+      res.status(404).json({ error: "No products found in this gender." });
+    }
+  } catch {
+    res.status(500).json({ error: "Failed to fetch products by gender." });
+  }
+});
+
 const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
